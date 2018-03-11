@@ -6,6 +6,7 @@ author:bibaodi
 import mnist_loader
 import network
 import network2
+import network3
 import time
 
 
@@ -31,7 +32,23 @@ def main_02():
     t1 = time.gmtime(time.time())
     print('training NN2 running....%d:%d:%d end' % (t1.tm_hour,t1.tm_min, t1.tm_sec))
 
+def main_03():
+    from network3 import Network
+    from network3 import ConvPoolLayer, FullyConnectedLayer, SoftmaxLayer
+
+    training_data, validation_data, test_data = network3.load_data_shared()
+    net = network3.Network([
+        ConvPoolLayer(image_shape = (mini_batch_size, 1, 28, 28),
+                  filter_shape = (20, 1, 5, 5),
+                  poolsize = (2, 2)),
+        ConvPoolLayer(image_shape = (mini_batch_size, 20, 12, 12),
+                  filter_shape = (40, 20, 5, 5),
+                  poolsize = (2, 2)),
+        FullyConnectedLayer(n_in=40*4*4, n_out=100),
+        SoftmaxLayer(n_in=100, n_out=10)], mini_batch_size)
+    net.SGD(training_data, 60, mini_batch_size, 0.1, validation_data, test_data)
 
 if __name__ == "__main__":
-   main_01()
-   # main_02()
+    #main_01()
+    #main_02()
+    main_03()

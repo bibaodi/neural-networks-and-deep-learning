@@ -54,7 +54,12 @@ class Network(object):
         network will be evaluated against the test data after each
         epoch, and partial progress printed out.  This is useful for
         tracking progress, but slows things down substantially."""
-        if test_data: n_test = len(test_data)
+        if test_data:
+            n_test = len(test_data)
+            print("x={0},y={1}".format(x,y) for (x,y) in test_data)
+        for j in xrange(epochs):
+            if test_data:###test the grade and print
+                print("Epoch {0}: {1} / {2}".format(j, self.evaluate(test_data), n_test))
         n = len(training_data)
         print("n={0}".format(n))
         for j in xrange(epochs):
@@ -74,10 +79,10 @@ class Network(object):
         The ``mini_batch`` is a list of tuples ``(x, y)``, and ``eta``
         is the learning rate."""
         nabla_b = [np.zeros(b.shape) for b in self.biases]
-        print(type(self.biases))
-        print(len(self.biases))
-        print(self.biases[0].shape)
-        print(self.biases[1].shape)
+        #print(type(self.biases))
+        #print(len(self.biases))
+        #print(self.biases[0].shape)
+        #print(self.biases[1].shape)
 
         nabla_w = [np.zeros(w.shape) for w in self.weights]
         print("len={0},[0]{1}\n[1]{2}".format(len(self.weights),self.weights[0].shape,self.weights[1].shape))
@@ -85,7 +90,7 @@ class Network(object):
             delta_nabla_b, delta_nabla_w = self.backprop(x, y)
             nabla_b = [nb + dnb for nb, dnb in zip(nabla_b, delta_nabla_b)]  # this line is a question!!!---------------question
             nabla_w = [nw + dnw for nw, dnw in zip(nabla_w, delta_nabla_w)]  # this line just a SUM() original nabla=0,then add all calcuted value
-            print("db={0},dw={1}\nnb={2},nw={3}".format(delta_nabla_b, delta_nabla_w, nabla_b, nabla_w))
+            # print("db={0},dw={1}\nnb={2},nw={3}".format(delta_nabla_b, delta_nabla_w, nabla_b, nabla_w))
             # calcute all delta_b, delta_w, and add them all, next step to get the new biases or weight value.
         # #####gradient discend: when all data in mini_batch has been trained, update the weight and the biases
         self.weights = [w - (eta / len(mini_batch)) * nw
@@ -135,6 +140,11 @@ class Network(object):
         neuron in the final layer has the highest activation."""
         test_results = [(np.argmax(self.feedforward(x)), y)
                         for (x, y) in test_data]
+        print("test_results.type={0},sub.type={1}".format(type(test_results), type(test_results[0])))
+        for x, y in test_results:
+            print("x={0},y={1}".format(x, y))
+        import sys
+        sys.exist(0)
         return sum(int(x == y) for (x, y) in test_results)
 
     def cost_derivative(self, output_activations, y):
