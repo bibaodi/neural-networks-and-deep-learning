@@ -93,10 +93,10 @@ class Network(object):
             # print("db={0},dw={1}\nnb={2},nw={3}".format(delta_nabla_b, delta_nabla_w, nabla_b, nabla_w))
             # calcute all delta_b, delta_w, and add them all, next step to get the new biases or weight value.
         # #####gradient discend: when all data in mini_batch has been trained, update the weight and the biases
-        self.weights = [w - (eta / len(mini_batch)) * nw
-                        for w, nw in zip(self.weights, nabla_w)]
         self.biases = [b - (eta / len(mini_batch)) * nb
                        for b, nb in zip(self.biases, nabla_b)]
+        self.weights = [w - (eta / len(mini_batch)) * nw
+                        for w, nw in zip(self.weights, nabla_w)]
 
     def backprop(self, x, y):
         """Return a tuple ``(nabla_b, nabla_w)`` representing the
@@ -115,6 +115,7 @@ class Network(object):
             zs.append(z)
             activation = sigmoid(z)
             activations.append(activation)
+            #upon operation finish the forward calcuting, blew will backward pass
         # backward pass
         delta = self.cost_derivative(activations[-1], y) * sigmoid_prime(zs[-1]) #function BP1
         nabla_b[-1] = delta ###BP3
