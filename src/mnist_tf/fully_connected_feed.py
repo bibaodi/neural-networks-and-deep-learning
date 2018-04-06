@@ -40,7 +40,7 @@ flags.DEFINE_integer('hidden1', 128, 'Number of units in hidden layer 1.')
 flags.DEFINE_integer('hidden2', 32, 'Number of units in hidden layer 2.')
 flags.DEFINE_integer('batch_size', 100, 'Batch size.  '
                      'Must divide evenly into the dataset sizes.')
-flags.DEFINE_string('train_dir', 'data', 'Directory to put the training data.')
+flags.DEFINE_string('train_dir', '/home/bibao/PycharmProjects/neural-networks-and-deep-learning/src/mnist_tf/data/', 'Directory to put the training data.')
 flags.DEFINE_boolean('fake_data', False, 'If true, uses fake data '
                      'for unit testing.')
 
@@ -128,6 +128,7 @@ def run_training():
   """Train MNIST for a number of steps."""
   # Get the sets of images and labels for training, validation, and
   # test on MNIST.
+  print(FLAGS.train_dir, FLAGS.fake_data)
   data_sets = input_data.read_data_sets(FLAGS.train_dir, FLAGS.fake_data)
 
   # Tell TensorFlow that the model will be built into the default Graph.
@@ -151,11 +152,11 @@ def run_training():
     eval_correct = mnist.evaluation(logits, labels_placeholder)
 
     # Build the summary operation based on the TF collection of Summaries.
-    #summary_op = tf.merge_all_summaries()
-    summary_op = tf.merge_v2_checkpoints()
+    #summary_op = tf.merge_all_summaries()#below is the compatibility format function
+    summary_op = tf.summary.merge_all()
 
 
-    # Create a saver for writing training checkpoints.
+    # Create a saver for writing training checkpoints
     saver = tf.train.Saver()
 
     # Create a session for running Ops on the Graph.
@@ -166,8 +167,9 @@ def run_training():
     sess.run(init)
 
     # Instantiate a SummaryWriter to output summaries and the Graph.
-    summary_writer = tf.train.SummaryWriter(FLAGS.train_dir,
-                                            graph_def=sess.graph_def)
+    #summary_writer = tf.train.SummaryWriter(FLAGS.train_dir,
+    #                                        graph_def=sess.graph_def) #below is the correct format in tf v1.6
+    summary_writer = tf.summary.FileWriter(FLAGS.train_dir, graph_def=sess.graph_def)
 
     # And then after everything is built, start the training loop.
     for step in xrange(FLAGS.max_steps):
@@ -224,7 +226,8 @@ def run_training():
 
 
 def main(_):
-  run_training()
+  print(">>>>>>>>>>>>>>>main...")
+  run_training()# the application entrance
 
 
 if __name__ == '__main__':
